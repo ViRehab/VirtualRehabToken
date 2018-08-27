@@ -1,14 +1,14 @@
 pragma solidity 0.4.24;
 
 
-import "./CustomWhitelist.sol";
+import "./CustomAdmin.sol";
 
 
 /**
  * @title Pausable
  * @dev Base contract which allows children to implement an emergency stop mechanism.
  */
-contract CustomPausable is CustomWhitelist {
+contract CustomPausable is CustomAdmin {
   event Pause();
   event Unpause();
 
@@ -33,7 +33,7 @@ contract CustomPausable is CustomWhitelist {
   /**
    * @dev called by the owner to pause, triggers stopped state
    */
-  function pause() onlyWhitelisted whenNotPaused public {
+  function pause() onlyAdmin whenNotPaused public {
     paused = true;
     emit Pause();
   }
@@ -41,7 +41,7 @@ contract CustomPausable is CustomWhitelist {
   /**
    * @dev called by the owner to unpause, returns to normal state
    */
-  function unpause() onlyWhitelisted whenPaused public {
+  function unpause() onlyAdmin whenPaused public {
     paused = false;
     emit Unpause();
   }

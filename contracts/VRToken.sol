@@ -46,7 +46,7 @@ contract VRToken is StandardToken, CustomPausable {
   }
 
 
-  function releaseTokenForTransfer() public onlyAdmin {
+  function releaseTokenForTransfer() public onlyAdmin whenNotPaused {
     if(released) {
       revert();
     }
@@ -78,7 +78,7 @@ contract VRToken is StandardToken, CustomPausable {
 
   function mintTokens(address _to, uint _value) internal {
     require(_to != address(0));
-    _value = _value * (10 ** uint256(decimals));
+    require(totalSupply_.add(_value) <= MAX_SUPPLY);
     balances[_to] = balances[_to].add(_value);
     totalSupply_ = totalSupply_.add(_value);
   }
@@ -89,7 +89,7 @@ contract VRToken is StandardToken, CustomPausable {
     mintingList[computeHash(_key)] = true;
   }
 
-  function mintTokensForAdvisors() public onlyAdmin {
+  function mintTokensForAdvisors() public  onlyAdmin {
     require(ICOEndDate != 0);
     // 1 year
     require(now > (ICOEndDate + 12 * 30 days));
@@ -100,7 +100,7 @@ contract VRToken is StandardToken, CustomPausable {
     require(ICOEndDate != 0);
     // 1 year
     require(now > (ICOEndDate + 12 * 30 days));
-    mintOnce("founders", msg.sender, 750000);
+    mintOnce("founders", msg.sender, 60000000);
 
   }
 

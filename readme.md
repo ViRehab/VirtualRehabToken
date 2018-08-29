@@ -100,4 +100,5 @@ Thank you for taking the time to learn more about Virtual Rehab. We appreciate y
 - [Twitter](https://twitter.com/ViRehab)
 - [LinkedIn](https://www.linkedin.com/company/virtual-rehab/)
 - [Medium](https://medium.com/@VirtualRehab)
-
+- [Reddit](https://www.reddit.com/r/ViRehab/)
+- [YouTube](https://www.youtube.com/c/virtualrehab)

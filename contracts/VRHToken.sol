@@ -1,8 +1,8 @@
 pragma solidity 0.4.24;
 import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "./CustomPausable.sol";
-contract VRToken is StandardToken, CustomPausable {
 
+contract VRHToken is StandardToken, CustomPausable {
   uint8 public constant decimals = 18;
   string public constant name = "VirtualRehab";
   string public constant symbol = "VRH";
@@ -110,5 +110,4 @@ contract VRToken is StandardToken, CustomPausable {
     require(now > (ICOEndDate + 2 * 30 days));
     mintOnce("services", msg.sender, 2085000);
   }
-
  }

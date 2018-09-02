@@ -1,4 +1,4 @@
-const Token = artifacts.require('./VRToken.sol');
+const Token = artifacts.require('./VRHToken.sol');
 const BigNumber = require('bignumber.js');
 const EVMRevert = require('./helpers/EVMRevert').EVMRevert;
 const ether = require('./helpers/ether').ether;
@@ -12,12 +12,13 @@ require('chai')
   .should();
 
 contract('token', function(accounts) {
-  describe('Token Creation', () => {
-    it('should deploy with correct parameters', async () => {
+  describe('Token Creation Ruleset', () => {
+    it('must correctly deploy with correct parameters and state variables.', async () => {
       let token = await Token.new();
       let owner = accounts[0];
       let expectedMaxSupply = 400000000;
       let expectedInitialSupply = expectedMaxSupply -  60000000 - 750000 - 2085000;
+
       assert(await token.owner() === owner);
       assert(await token.released() === false);
       assert((await token.decimals()).toNumber() === 18);
@@ -25,90 +26,94 @@ contract('token', function(accounts) {
       assert(await token.symbol() === 'VRH');
       assert(await token.admins(owner));
       assert((await token.numberOfAdmins()).toNumber() === 1);
+
       (await token.MAX_SUPPLY()).should.bignumber.equal(ether(expectedMaxSupply));
       (await token.totalSupply()).should.bignumber.equal(ether(expectedInitialSupply));
       (await token.balanceOf(owner)).should.bignumber.equal(ether(expectedInitialSupply));
+
       assert((await token.ICOEndDate()).toNumber() === 0);
     });
   });
-  describe('Admin Functions', () => {
+
+  describe('Admin Functions Ruleset', () => {
     let token;
     let owner;
+
     beforeEach(async () => {
       token = await Token.new();
       owner = accounts[0];
-    })
-    it('new admins can be added only by existing admins', async () => {
-      await token.addAdmin(accounts[1]);
-      assert(await token.admins(accounts[1]));
-      await token.addAdmin(accounts[2], { from: accounts[3]})
-      .should.be.rejectedWith(EVMRevert);
-    })
+    });
 
-    it('new admins can be added only by existing admins', async () => {
+    it('must allow new admins to be added only by existing admins.', async () => {
+      await token.addAdmin(accounts[1]);
+
+      assert(await token.admins(accounts[1]));
+      await token.addAdmin(accounts[2], { from: accounts[3]}).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must correctly count the number of admins.', async () => {
       await token.addAdmin(accounts[1]);
       assert(await token.admins(accounts[1]));
-      await token.addAdmin(accounts[2], { from: accounts[3]})
-      .should.be.rejectedWith(EVMRevert);
+
+      await token.addAdmin(accounts[2], { from: accounts[3]}).should.be.rejectedWith(EVMRevert);
       assert((await token.numberOfAdmins()).toNumber() == 2);
-    })
+    });
 
-    it('admins can be removed by other admins', async () => {
+    it('must allow admins to be removed by other admins.', async () => {
       await token.addAdmin(accounts[1]);
       await token.addAdmin(accounts[2]);
+
       await token.removeAdmin(accounts[2], { from : accounts[1] });
       assert((await token.admins(accounts[2])) === false);
     });
-    it('Zero address cannot be added as admins', async () => {
+
+    it('must not allow zero address to be added as an admin.', async () => {
       const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
       await token.addAdmin(ZERO_ADDRESS).should.be.rejectedWith(EVMRevert);
-    })
+    });
   });
-  describe('Set ICO end date', () => {
+
+  describe('ICO End Ruleset', () => {
     let token;
+
     beforeEach(async () => {
       token = await Token.new();
     });
-    it('should set ICO date', async () => {
+
+    it('must properly set the ICO end date.', async () => {
       let currentTime = await latestTime();
       const ICOEndDate = currentTime + duration.weeks(1);
+
       await token.setICOEndDate(ICOEndDate);
       assert((await token.ICOEndDate()).toNumber() === ICOEndDate);
     });
-    it('ICO date cannot be set by non admin', async () => {
+
+    it('must not allow non admins to set the ICO end date.', async () => {
       let currentTime = await latestTime();
       const ICOEndDate = currentTime + duration.weeks(1);
-      await token.setICOEndDate(ICOEndDate, { from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
+
+      await token.setICOEndDate(ICOEndDate, { from: accounts[1] }).should.be.rejectedWith(EVMRevert);
     });
 
-    it('ICO date cannot be set twice', async () => {
+    it('must not allow ICO end date to be set more than once.', async () => {
       let currentTime = await latestTime();
       const ICOEndDate = currentTime + duration.weeks(1);
+
       await token.setICOEndDate(ICOEndDate);
-      await token.setICOEndDate(ICOEndDate)
-      .should.be.rejectedWith(EVMRevert)
+      await token.setICOEndDate(ICOEndDate).should.be.rejectedWith(EVMRevert)
     });
 
-    it('ICO date cannot be set twice', async () => {
+    it('must ensure that ICO end date is a future date.', async () => {
       let currentTime = await latestTime();
-      const ICOEndDate = currentTime + duration.weeks(1);
-      await token.setICOEndDate(ICOEndDate);
-      await token.setICOEndDate(ICOEndDate)
-      .should.be.rejectedWith(EVMRevert)
-    });
-
-    it('ICO date cannot be set to the latestTime', async () => {
-      let currentTime = await latestTime();
-      await token.setICOEndDate(currentTime)
-      .should.be.rejectedWith(EVMRevert)
+      await token.setICOEndDate(currentTime).should.be.rejectedWith(EVMRevert)
     });
   });
 
-  describe('mint tokens for advisors, founders and services', async () => {
+  describe('Minting Ruleset', async () => {
     let token;
     let mintingAccount = accounts[2];
     let ICOEndDate;
+
     beforeEach(async () => {
       token = await Token.new();
       await token.addAdmin(mintingAccount);
@@ -118,62 +123,64 @@ contract('token', function(accounts) {
       await increaseTimeTo(ICOEndDate + 1);
     });
 
-    it('mint tokens cannot be called non admins ', async () => {
-      await token.mintTokensForAdvisors({ from: accounts[3] })
-      .should.be.rejectedWith(EVMRevert);
-      await token.mintTokensForFounders({ from: accounts[3] })
-      .should.be.rejectedWith(EVMRevert);
-      await token.mintTokensForServices({ from: accounts[3] })
-      .should.be.rejectedWith(EVMRevert);
+    it('must not allow non admins to request minting or receive the remaining tokens.', async () => {
+      await token.mintTokensForAdvisors({ from: accounts[3] }).should.be.rejectedWith(EVMRevert);
+      await token.mintTokensForFounders({ from: accounts[3] }).should.be.rejectedWith(EVMRevert);
+      await token.mintTokensForServices({ from: accounts[3] }).should.be.rejectedWith(EVMRevert);
     });
 
-    it('cannot mint when token is paused', async () => {
+    it('must not allow minting when token is paused.', async () => {
       let years_3 = ICOEndDate + duration.years(3);
+      
       await increaseTimeTo(years_3);
       await token.pause();
+
       await token.mintTokensForAdvisors().should.be.rejectedWith(EVMRevert);
       await token.mintTokensForFounders().should.be.rejectedWith(EVMRevert);
       await token.mintTokensForServices().should.be.rejectedWith(EVMRevert);
     });
 
-    it('cannot mint tokens to founders before 1 year', async () => {
+    it('must not allow minting of founder tokens before 1 year from the ICO end date.', async () => {
       let lessThan1Year = ICOEndDate + duration.days(30);
       await increaseTimeTo(lessThan1Year);
-      await token.mintTokensForFounders()
-      .should.be.rejectedWith(EVMRevert);
-    })
 
-    it('mint tokens to founders after 1 year', async () => {
+      await token.mintTokensForFounders().should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must allow minting of founder tokens after 1 year of the ICO end date.', async () => {
       let foundersWallet = accounts[4];
       await token.addAdmin(foundersWallet);
+
       let moreThan1year = ICOEndDate + duration.years(1);
       let prevSupply = await token.totalSupply();
+
       await increaseTimeTo(moreThan1year + 10);
       await token.mintTokensForFounders({ from: foundersWallet });
-      (await token.balanceOf(foundersWallet))
-      .should.be.bignumber.equal(ether(60000000));
+
+      (await token.balanceOf(foundersWallet)).should.be.bignumber.equal(ether(60000000));
+
       let currentSupply = await token.totalSupply();
       (currentSupply.sub(prevSupply)).should.be.bignumber.equal(ether(60000000));
-    })
+    });
 
-    it('mint tokens to founders after 1 year cannot be called twice', async () => {
+    it('must not allow founder token allocation to be minted more than once.', async () => {
       let foundersWallet = accounts[4];
       await token.addAdmin(foundersWallet);
+
       let moreThan1year = ICOEndDate + duration.years(1);
+
       await increaseTimeTo(moreThan1year + 10);
       await token.mintTokensForFounders({ from: foundersWallet });
-      await token.mintTokensForFounders( { from:  foundersWallet })
-      .should.be.rejectedWith(EVMRevert);
-    })
+      await token.mintTokensForFounders( { from:  foundersWallet }).should.be.rejectedWith(EVMRevert);
+    });
 
-    it('cannot mint to advisors before 1 year', async () => {
+    it('must not allow minting of advisor tokens before 1 year from the ICO end date.', async () => {
       let lessThan1Year = ICOEndDate + duration.days(30);
       await increaseTimeTo(lessThan1Year);
-      await token.mintTokensForAdvisors()
-      .should.be.rejectedWith(EVMRevert);
-    })
+      await token.mintTokensForAdvisors().should.be.rejectedWith(EVMRevert);
+    });
 
-    it('mint tokens to advisors after 1 year', async () => {
+    it('must allow minting of advisor tokens after 1 year of the ICO end date.', async () => {
       let advisorsWallet = accounts[5];
       await token.addAdmin(advisorsWallet);
       let moreThan1year = ICOEndDate + duration.years(1);
@@ -183,141 +190,230 @@ contract('token', function(accounts) {
       (await token.balanceOf(advisorsWallet)).should.be.bignumber.equal(ether(750000));
       let currentSupply = await token.totalSupply();
       (currentSupply.sub(prevSupply)).should.be.bignumber.equal(ether(750000));
-    })
+    });
 
-    it('mint tokens to advisors after 1 year cannot be called twice', async () => {
+    it('must not allow advisor token allocation to be minted more than once.', async () => {
       let advisorsWallet = accounts[5];
       await token.addAdmin(advisorsWallet);
       let moreThan1year = ICOEndDate + duration.years(1);
+
       await increaseTimeTo(moreThan1year + 10);
       await token.mintTokensForAdvisors({ from: advisorsWallet });
-      await token.mintTokensForAdvisors({ from : advisorsWallet })
-      .should.be.rejectedWith(EVMRevert);
+      await token.mintTokensForAdvisors({ from : advisorsWallet }).should.be.rejectedWith(EVMRevert);
     });
 
-    it('mint tokens to services cannot be called within 2 months after the ICO date has been set', async () => {
+    it('must not allow minting of service tokens before 2 months from the ICO end date.', async () => {
       let lessThan2Months = ICOEndDate + duration.weeks(2);
       await increaseTimeTo(lessThan2Months);
       await token.mintTokensForServices().should.be.rejectedWith(EVMRevert);
     });
 
-    it('mint tokens to services after 2 months', async () => {
+    it('must allow minting of service tokens after 2 months of the ICO end date.', async () => {
       let servicesWallet = accounts[5];
       await token.addAdmin(servicesWallet);
+
       let twoMonths = ICOEndDate + duration.days(60);
       await increaseTimeTo(twoMonths + 10);
+
       let prevSupply = await token.totalSupply();
-      await token.mintTokensForServices({ from: servicesWallet })
+      await token.mintTokensForServices({ from: servicesWallet });
+
       let balance = await token.balanceOf(servicesWallet)
       balance.should.be.bignumber.equal(ether(2085000));
+
       let currentSupply = await token.totalSupply();
       currentSupply.sub(prevSupply).should.be.bignumber.equal(ether(2085000));
     });
 
-    it('mint tokens to services cannot be called twice', async () => {
+    it('must not allow service token allocation to be minted more than once.', async () => {
       let servicesWallet = accounts[5];
       await token.addAdmin(servicesWallet);
+      
       let twoMonths = ICOEndDate + duration.days(60);
       await increaseTimeTo(twoMonths + 10);
-      await token.mintTokensForServices({ from: servicesWallet })
-      await token.mintTokensForServices({ from: servicesWallet })
-      .should.be.rejectedWith(EVMRevert);
-    })
-    it('after all the mints the total supply must be equal to MAX_SUPPLY', async () => {
+      await token.mintTokensForServices({ from: servicesWallet });
+      await token.mintTokensForServices({ from: servicesWallet }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must result in the toal supply being equal to the maximum supply once all tokens are minted.', async () => {
       let after3Years = ICOEndDate + duration.years(3);
+
       await increaseTimeTo(after3Years);
       await token.mintTokensForAdvisors();
       await token.mintTokensForFounders();
       await token.mintTokensForServices();
+
       let MAX_SUPPLY = await token.MAX_SUPPLY();
       let totalSupply = await token.totalSupply();
+
       totalSupply.should.be.bignumber.equal(MAX_SUPPLY);
     });
   });
-  describe('Minting before ICO is over', () => {
-    it('Cannot mint before ICO is over', async () => {
+
+  describe('Minting Ruleset Continued', () => {
+    it('must not allow minting before ICO is over.', async () => {
       let token = await Token.new();
       let currentTime = await latestTime();
       let after3Years = currentTime + duration.years(3);
+
       await increaseTimeTo(after3Years);
       await token.mintTokensForAdvisors().should.be.rejectedWith(EVMRevert);
       await token.mintTokensForFounders().should.be.rejectedWith(EVMRevert);
       await token.mintTokensForServices().should.be.rejectedWith(EVMRevert);
-    })
-  })
-  describe('releaseTokenForTransfer', () => {
-    it('released token sets released to true', async () => {
+    });
+  });
+
+  describe('Token Transfer State Ruleset', () => {
+    it('must properly set the release state variable.', async () => {
       let token = await Token.new();
-      await token.releaseTokenForTransfer()
+      await token.releaseTokenForTransfer();
+
       let released = await token.released();
       assert(released === true);
-    })
-    it('Release token transfer can be called only by admin', async () => {
-      let token = await Token.new();
-      await token.releaseTokenForTransfer({ from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
     });
 
-    it('Release token transfer cannot be done when its paused', async () => {
+    it('must only allow admins to release tokens for transfers.', async () => {
+      let token = await Token.new();
+
+      await token.releaseTokenForTransfer({ from: accounts[1] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must not allow anyone to release tokens for transfer when the token is paused.', async () => {
       let token = await Token.new();
       await token.pause();
-      await token.releaseTokenForTransfer({ from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
+      await token.releaseTokenForTransfer({ from: accounts[1] }).should.be.rejectedWith(EVMRevert);
     });
   });
 
-  describe('ERC20 functions: before token transfer release', async () => {
+  describe('ERC20 Feature Ruleset (When Transfer State is Disabled)', async () => {
     let token;
+    
     beforeEach(async () => {
       token = await Token.new();
       await token.addAdmin(accounts[1]);
-    })
-    it('transfer can be called only by admin', async () => {
+    });
+
+    it('must only allow an admin to transfer tokens when the transfer state is disabled.', async () => {
       await token.transfer(accounts[1], 10);
       let balance = await token.balanceOf(accounts[1]);
       assert(balance.toNumber() == 10);
+
       await token.transfer(accounts[2], 9, { from: accounts[1] });
       let accounts2Balance = await token.balanceOf(accounts[2]);
       assert(accounts2Balance.toNumber() === 9);
-      await token.transfer(accounts[3], 8, { from: accounts[2] })
-      .should.be.rejectedWith(EVMRevert);
-    })
 
-    it('approve from can be called only admins', async () => {
+      await token.transfer(accounts[3], 8, { from: accounts[2] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must only allow an admin to approve spenders when the transfer state is disabled.', async () => {
       await token.approve(accounts[3], 10);
       let account3Allowance = await token.allowance(accounts[0], accounts[3]);
       assert(account3Allowance.toNumber() == 10);
-      await token.transfer(accounts[3], 10);
-      await token.approve(accounts[2], 9, { from: accounts[3] })
-      .should.be.rejectedWith(EVMRevert);
-    })
 
-    it('increaseApproval from can be called only admins', async () => {
+      await token.transfer(accounts[3], 10);
+      await token.approve(accounts[2], 9, { from: accounts[3] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must only allow an admin to increase approvals when the transfer state is disabled.', async () => {
       await token.approve(accounts[3], 10);
+      await token.increaseApproval(accounts[3], 1);
+
+      let account3Allowance = await token.allowance(accounts[0], accounts[3]);
+      assert(account3Allowance.toNumber() == 11);
+
+      await token.transfer(accounts[1], 11);
+      await token.approve(accounts[3], 10, { from: accounts[1] });
+      await token.removeAdmin(accounts[1]);
+      await token.increaseApproval(accounts[3], 1, { from: accounts[1] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must only allow an admin to decrease approvals when the transfer state is disabled.', async () => {
+      await token.approve(accounts[3], 10);
+      await token.decreaseApproval(accounts[3], 1);
+
+      let account3Allowance = await token.allowance(accounts[0], accounts[3]);
+      assert(account3Allowance.toNumber() == 9);
+
+      await token.transfer(accounts[1], 11);
+      await token.approve(accounts[3], 10, { from: accounts[1] });
+      await token.removeAdmin(accounts[1]);
+      await token.decreaseApproval(accounts[3], 1, { from: accounts[1] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must only allow an admin to transfer from approved accounts when the transfer state is disabled.', async () => {
+      await token.approve(accounts[3], 10);
+      await token.transferFrom(accounts[0], accounts[2], 1, { from: accounts[3] });
+
+      let balance = await token.balanceOf(accounts[2]);
+      assert(balance.toNumber() === 1);
+
+      await token.transfer(accounts[1], 10);
+      await token.approve(accounts[4], 10, { from : accounts[1] });
+      await token.removeAdmin(accounts[1]);
+      await token.transferFrom(accounts[1], accounts[0], 1, { from: accounts[4] }).should.be.rejectedWith(EVMRevert);
+    });
+  });
+
+  describe('ERC20 Feature Ruleset (When Paused)', async () => {
+    let token;
+
+    beforeEach(async () => {
+      token = await Token.new();
+      await token.addAdmin(accounts[1]);
+      await token.releaseTokenForTransfer();
+      await token.pause();
+    });
+
+    it('must only allow an admin to transfer when the token is paused.', async () => {
+      await token.transfer(accounts[1], 10);
+      let balance = await token.balanceOf(accounts[1]);
+      assert(balance.toNumber() == 10);
+
+      await token.transfer(accounts[2], 9, { from: accounts[1] });
+      let accounts2Balance = await token.balanceOf(accounts[2]);
+      assert(accounts2Balance.toNumber() === 9);
+
+      await token.transfer(accounts[3], 8, { from: accounts[2] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must only allow an admin to approve spenders when the token is paused.', async () => {
+      await token.approve(accounts[3], 10);
+      let account3Allowance = await token.allowance(accounts[0], accounts[3]);
+      assert(account3Allowance.toNumber() == 10);
+
+      await token.transfer(accounts[3], 10);
+      await token.approve(accounts[2], 9, { from: accounts[3] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must only allow an admin to increase approvals when the token is paused.', async () => {
+      await token.approve(accounts[3], 10);
+
       await token.increaseApproval(accounts[3], 1);
       let account3Allowance = await token.allowance(accounts[0], accounts[3]);
       assert(account3Allowance.toNumber() == 11);
+
       await token.transfer(accounts[1], 11);
       await token.approve(accounts[3], 10, { from: accounts[1] });
       await token.removeAdmin(accounts[1]);
-      await token.increaseApproval(accounts[3], 1, { from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
+      await token.increaseApproval(accounts[3], 1, { from: accounts[1] }).should.be.rejectedWith(EVMRevert);
     });
 
-    it('decreaseApproval from can be called only admins', async () => {
+    it('must only allow an admin to decrease approvals when the token is paused.', async () => {
       await token.approve(accounts[3], 10);
+
       await token.decreaseApproval(accounts[3], 1);
       let account3Allowance = await token.allowance(accounts[0], accounts[3]);
       assert(account3Allowance.toNumber() == 9);
+
       await token.transfer(accounts[1], 11);
       await token.approve(accounts[3], 10, { from: accounts[1] });
       await token.removeAdmin(accounts[1]);
-      await token.decreaseApproval(accounts[3], 1, { from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
+      await token.decreaseApproval(accounts[3], 1, { from: accounts[1] }).should.be.rejectedWith(EVMRevert);
     });
 
-    it('transferFrom can done from only admin accounts', async () => {
+    it('must only allow an admin to transfer from approved accounts when the token is paused.', async () => {
       await token.approve(accounts[3], 10);
+
       await token.transferFrom(accounts[0], accounts[2], 1, { from: accounts[3] });
       let balance = await token.balanceOf(accounts[2]);
       assert(balance.toNumber() === 1);
@@ -325,109 +421,125 @@ contract('token', function(accounts) {
       await token.transfer(accounts[1], 10);
       await token.approve(accounts[4], 10, { from : accounts[1] });
       await token.removeAdmin(accounts[1]);
-      await token.transferFrom(accounts[1], accounts[0], 1, { from: accounts[4] })
-      .should.be.rejectedWith(EVMRevert);
+      await token.transferFrom(accounts[1], accounts[0], 1, { from: accounts[4] }).should.be.rejectedWith(EVMRevert);
     });
   });
-  describe('ERC20 functions: when paused', async () => {
+
+
+  describe('Token Burn Ruleset', async () => {
     let token;
+
     beforeEach(async () => {
       token = await Token.new();
-      await token.addAdmin(accounts[1]);
-      await token.releaseTokenForTransfer();
-      await token.pause();
-    })
-    it('transfer can be called only by admin', async () => {
-      await token.transfer(accounts[1], 10);
-      let balance = await token.balanceOf(accounts[1]);
-      assert(balance.toNumber() == 10);
-      await token.transfer(accounts[2], 9, { from: accounts[1] });
-      let accounts2Balance = await token.balanceOf(accounts[2]);
-      assert(accounts2Balance.toNumber() === 9);
-      await token.transfer(accounts[3], 8, { from: accounts[2] })
-      .should.be.rejectedWith(EVMRevert);
-    })
-
-    it('approve from can be called only admins', async () => {
-      await token.approve(accounts[3], 10);
-      let account3Allowance = await token.allowance(accounts[0], accounts[3]);
-      assert(account3Allowance.toNumber() == 10);
-      await token.transfer(accounts[3], 10);
-      await token.approve(accounts[2], 9, { from: accounts[3] })
-      .should.be.rejectedWith(EVMRevert);
-    })
-
-    it('increaseApproval from can be called only admins', async () => {
-      await token.approve(accounts[3], 10);
-      await token.increaseApproval(accounts[3], 1);
-      let account3Allowance = await token.allowance(accounts[0], accounts[3]);
-      assert(account3Allowance.toNumber() == 11);
-      await token.transfer(accounts[1], 11);
-      await token.approve(accounts[3], 10, { from: accounts[1] });
-      await token.removeAdmin(accounts[1]);
-      await token.increaseApproval(accounts[3], 1, { from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
+      await token.addAdmin(accounts[2]);
+      await token.transfer(accounts[2], 10);
     });
 
-    it('decreaseApproval from can be called only admins', async () => {
-      await token.approve(accounts[3], 10);
-      await token.decreaseApproval(accounts[3], 1);
-      let account3Allowance = await token.allowance(accounts[0], accounts[3]);
-      assert(account3Allowance.toNumber() == 9);
-      await token.transfer(accounts[1], 11);
-      await token.approve(accounts[3], 10, { from: accounts[1] });
-      await token.removeAdmin(accounts[1]);
-      await token.decreaseApproval(accounts[3], 1, { from: accounts[1] })
-      .should.be.rejectedWith(EVMRevert);
+    it('must correctly reduce the total supply when the burn feature is used.', async () => {
+      let totalSupply = await token.totalSupply();
+      await token.burn(1, {from: accounts[2]});
+
+      (await token.totalSupply()).should.be.bignumber.equal(totalSupply.sub(1));
     });
 
-    it('transferFrom can done from only admin accounts', async () => {
-      await token.approve(accounts[3], 10);
-      await token.transferFrom(accounts[0], accounts[2], 1, { from: accounts[3] });
+    it('must correctly reduce the balance when the burn feature is used.', async () => {
       let balance = await token.balanceOf(accounts[2]);
-      assert(balance.toNumber() === 1);
-      await token.transfer(accounts[1], 10);
-      await token.approve(accounts[4], 10, { from : accounts[1] });
-      await token.removeAdmin(accounts[1]);
-      await token.transferFrom(accounts[1], accounts[0], 1, { from: accounts[4] })
-      .should.be.rejectedWith(EVMRevert);
+      await token.burn(1, {from: accounts[2]});
+
+      (await token.balanceOf(accounts[2])).should.be.bignumber.equal(balance.sub(1));
     });
   });
 
-  describe('ERC20 functions after token transfer release', async () => {
+
+  describe('Bulk Token Transfer Ruleset', async () => {
+    let token;
+
+    beforeEach(async () => {
+      token = await Token.new();
+      await token.addAdmin(accounts[2]);
+    });
+
+    it('must correctly perform bulk transfers.', async () => {
+      const destinations = [];
+      const balances = [];
+
+      for(let i=3;i<7;i++) {
+        destinations.push(accounts[i]);
+        balances.push(i);
+      };
+
+      await token.bulkTransfer(destinations, balances);
+
+      for(let i=0;i<destinations.length;i++) {
+        let balance = await token.balanceOf(destinations[i]);
+        assert(balance == balances[i]);
+      };
+    });
+
+    it('must not allow non-whitelisted (non-admin) addresses to bulk transfers.', async () => {
+      const balances = [];
+      const destinations = [];
+
+      for(let i=1;i<4;i++) {
+        destinations.push(accounts[i]);
+        balances.push(i);
+      };
+
+      await token.bulkTransfer(destinations, balances, { from: accounts[1] }).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('must revert when the balance is less than the sum.', async () => {
+      const balances = [];
+      const destinations = [];
+ 
+      for(let i=1;i<4;i++) {
+        destinations.push(accounts[i]);
+        balances.push(i);
+      };
+
+      let currentBalance = await token.balanceOf(accounts[0]);
+
+      await token.transfer(accounts[6], currentBalance);
+      await token.bulkTransfer(destinations, balances, { from: accounts[0] }).should.be.rejectedWith(EVMRevert);
+    });    
+  });
+
+
+  describe('ERC20 Feature Ruleset (When Transfer State is Enabled)', async () => {
     let token;
     beforeEach(async () => {
       token = await Token.new();
       await token.transfer(accounts[1], 10);
       await token.releaseTokenForTransfer();
-    })
-    it('transfer function', async () => {
+    });
+
+    it('must enable transfers for everyone when the token is not paused and the transfer state is released.', async () => {
       await token.transfer(accounts[2], 10, { from: accounts[1] });
       let balance = await token.balanceOf(accounts[2]);
       assert(balance.toNumber() == 10);
-    })
+    });
 
-    it('approve function', async () => {
+    it('must enable approvals for everyone when the token is not paused and the transfer state is released.', async () => {
       await token.approve(accounts[3], 10, { from: accounts[1] });
       let account3Allowance = await token.allowance(accounts[1], accounts[3]);
       assert(account3Allowance.toNumber() == 10);
     });
 
-    it('increaseApproval function', async () => {
+    it('must allow increasing approvals for everyone when the token is not paused and the transfer state is released.', async () => {
       await token.approve(accounts[3], 8, { from : accounts[1] });
       await token.increaseApproval(accounts[3], 1, { from: accounts[1] });
       let account3Allowance = await token.allowance(accounts[1], accounts[3]);
       assert(account3Allowance.toNumber() == 9);
     });
 
-    it('decreaseApproval function', async () => {
+    it('must allow decreasing approvals for everyone when the token is not paused and the transfer state is released.', async () => {
       await token.approve(accounts[3], 10, { from: accounts[1] });
       await token.decreaseApproval(accounts[3], 1, { from: accounts[1] });
       let account3Allowance = await token.allowance(accounts[1], accounts[3]);
       assert(account3Allowance.toNumber() == 9);
     });
 
-    it('transferFrom function', async () => {
+    it('must allow transfer from approved accounts for everyone when the token is not paused and the transfer state is released.', async () => {
       await token.approve(accounts[3], 10, { from: accounts[1] });
       await token.transferFrom(accounts[1], accounts[2], 1, { from: accounts[3] });
       let balance = await token.balanceOf(accounts[2]);

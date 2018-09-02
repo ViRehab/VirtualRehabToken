@@ -22,8 +22,8 @@ contract CustomAdmin is Ownable {
   mapping(address => bool) public admins;
   uint256 public numberOfAdmins;
 
-  event AdminAdded(address addr);
-  event AdminRemoved(address addr);
+  event AdminAdded(address indexed addr);
+  event AdminRemoved(address indexed addr);
 
   /**
    * @dev Throws if called by any account that's not an administrator.
@@ -36,6 +36,7 @@ contract CustomAdmin is Ownable {
   constructor() public {
     admins[msg.sender] = true;
     numberOfAdmins = 1;
+    
     emit AdminAdded(msg.sender);
   }
   /**

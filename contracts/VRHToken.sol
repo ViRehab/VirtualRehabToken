@@ -12,9 +12,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
  
- pragma solidity 0.4.24;
+pragma solidity 0.4.24;
+
 import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/BurnableToken.sol";
 import "./CustomPausable.sol";
@@ -28,11 +29,11 @@ import "./CustomPausable.sol";
 ///This allows token holders to easily store and manage their VRH tokens using existing solutions 
 ///including ERC20-compatible Ethereum wallets. The VRH Token is a utility token 
 ///and is core to Virtual Rehab’s end-to-end operations.
-///
+/// 
 ///VRH utility use cases include:
-///1- Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
-///2- Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
-///3- Receive incentives (VRH rewards) for seeking help and counselling from psychologists, therapists, or medical doctors
+///1. Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
+///2. Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
+///3. Receive incentives (VRH rewards) for seeking help and counselling from psychologists, therapists, or medical doctors
 contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   uint8 public constant decimals = 18;
   string public constant name = "VirtualRehab";

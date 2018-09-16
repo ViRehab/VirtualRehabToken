@@ -37,6 +37,9 @@ ganache-cli
 truffle test
 ```
 
+[Documentation](docs/VRHToken.md)
+
+
 # About Virtual Rehab
 
 Virtual Rehab's evidence-based solution leverages the advancements in virtual reality, artificial intelligence, and blockchain technologies for pain management, prevention of substance use disorders, and rehabilitation of repeat offenders. 

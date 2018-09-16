@@ -17,7 +17,7 @@ The $VRH utility token has four use cases:
 1. Allows users to order and download programs from Virtual Rehab Online Portal
 2. Allows users to request additional analysis (using Virtual Rehab unique expert system, which uses Artificial Intelligence) of executed programs
 3. Incentivizes users with $VRH tokens reward for seeking help and counselling from medical doctors, psychologists, and therapists (Proof of Therapy)
-4. Allows users to pay for services received at the Virtual Rehab Therapy Center
+4. Allows users to pay for services received at the Virtual Rehab Therapy Center (VRTC)
 
 ## Modifiers
 

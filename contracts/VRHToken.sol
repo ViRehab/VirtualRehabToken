@@ -34,6 +34,7 @@ import "./CustomPausable.sol";
 ///1. Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
 ///2. Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
 ///3. Receive incentives (VRH rewards) for seeking help and counselling from psychologists, therapists, or medical doctors
+///4. Allows users to pay for services received at the Virtual Rehab Therapy Center
 contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   uint8 public constant decimals = 18;
   string public constant name = "VirtualRehab";

@@ -4,6 +4,23 @@
 
 **CustomAdmin**
 
+## Contract Members
+**Constants & Variables**
+
+```js
+mapping(address => bool) public admins;
+uint256 public numberOfAdmins;
+
+```
+
+**Events**
+
+```js
+event AdminAdded(address addr);
+event AdminRemoved(address addr);
+
+```
+
 ## Modifiers
 
 - [onlyAdmin](#onlyadmin)
@@ -13,7 +30,7 @@
 Throws if called by any account that's not an administrator.
 
 ```js
-modifier onlyAdmin () internal
+modifier onlyAdmin() internal
 ```
 
 **Arguments**
@@ -32,6 +49,7 @@ Add an address to the adminstrator list.
 
 ```js
 function addAdmin(address addr) public
+
 ```
 
 **Arguments**
@@ -46,6 +64,7 @@ Remove an address from the administrator list.
 
 ```js
 function removeAdmin(address addr) public
+
 ```
 
 **Arguments**

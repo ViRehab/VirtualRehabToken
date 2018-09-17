@@ -12,12 +12,38 @@ This allows token holders to easily store and manage their VRH tokens using exis
 including ERC20-compatible Ethereum wallets. The VRH Token is a utility token 
 and is core to Virtual Rehab’s end-to-end operations.
  
-The $VRH utility token has four use cases:
+VRH utility use cases include:
+1. Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
+2. Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
+3. Receive incentives (VRH rewards) for seeking help and counselling from psychologists, therapists, or medical doctors
 
-1. Allows users to order and download programs from Virtual Rehab Online Portal
-2. Allows users to request additional analysis (using Virtual Rehab unique expert system, which uses Artificial Intelligence) of executed programs
-3. Incentivizes users with $VRH tokens reward for seeking help and counselling from medical doctors, psychologists, and therapists (Proof of Therapy)
-4. Allows users to pay for services received at the Virtual Rehab Therapy Center (VRTC)
+## Contract Members
+**Constants & Variables**
+
+```js
+//public members
+uint8 public constant decimals;
+string public constant name;
+string public constant symbol;
+uint256 public constant MAX_SUPPLY;
+uint256 public constant INITIAL_SUPPLY;
+bool public released;
+uint256 public ICOEndDate;
+
+//private members
+mapping(bytes32 => bool) private mintingList;
+
+```
+
+**Events**
+
+```js
+event Mint(address to, uint256 amount);
+event BulkTransferPerformed(address[] _destinations, uint256[] _amounts);
+event TokenReleased(bool _state);
+event ICOEndDateSet(uint256 _date);
+
+```
 
 ## Modifiers
 
@@ -29,7 +55,7 @@ The $VRH utility token has four use cases:
 Checks if the supplied address is able to perform transfers.
 
 ```js
-modifier canTransfer (address _from) internal
+modifier canTransfer(address _from) internal
 ```
 
 **Arguments**
@@ -43,7 +69,7 @@ modifier canTransfer (address _from) internal
 Checks if the minting for the supplied key was already performed.
 
 ```js
-modifier whenNotMinted (string _key) internal
+modifier whenNotMinted(string _key) internal
 ```
 
 **Arguments**
@@ -78,6 +104,7 @@ Computes keccak256 hash of the supplied value.
 
 ```js
 function computeHash(string _key) private
+returns(bytes32)
 ```
 
 **Arguments**
@@ -93,6 +120,7 @@ Can only be enabled after the end of the ICO.
 
 ```js
 function releaseTokenForTransfer() public
+
 ```
 
 **Arguments**
@@ -106,6 +134,7 @@ This function disables token transfers for everyone.
 
 ```js
 function disableTokenTransfers() public
+
 ```
 
 **Arguments**
@@ -119,6 +148,7 @@ This function enables the whitelisted application (internal application) to set 
 
 ```js
 function setICOEndDate(uint256 _date) public
+
 ```
 
 **Arguments**
@@ -131,6 +161,7 @@ function setICOEndDate(uint256 _date) public
 
 ```js
 function mintTokens(address _to, uint256 _value) private
+
 ```
 
 **Arguments**
@@ -146,6 +177,7 @@ Mints the tokens only once against the supplied key (category).
 
 ```js
 function mintOnce(string _key, address _to, uint256 _amount) private
+
 ```
 
 **Arguments**
@@ -162,6 +194,7 @@ Mints the below-mentioned amount of tokens allocated to the Virtual Rehab adviso
 
 ```js
 function mintTokensForAdvisors() public
+
 ```
 
 **Arguments**
@@ -175,6 +208,7 @@ Mints the below-mentioned amount of tokens allocated to the Virtual Rehab founde
 
 ```js
 function mintTokensForFounders() public
+
 ```
 
 **Arguments**
@@ -188,6 +222,7 @@ Mints the below-mentioned amount of tokens allocated to Virtual Rehab services.
 
 ```js
 function mintTokensForServices() public
+
 ```
 
 **Arguments**
@@ -199,6 +234,7 @@ function mintTokensForServices() public
 
 ```js
 function transfer(address _to, uint256 _value) public
+returns(bool)
 ```
 
 **Arguments**
@@ -214,6 +250,7 @@ Transfers tokens from a specified wallet address.
 
 ```js
 function transferFrom(address _from, address _to, uint256 _value) public
+returns(bool)
 ```
 
 **Arguments**
@@ -230,6 +267,7 @@ Approves a wallet address to spend on behalf of the sender.
 
 ```js
 function approve(address _spender, uint256 _value) public
+returns(bool)
 ```
 
 **Arguments**
@@ -245,6 +283,7 @@ Increases the approval of the spender.
 
 ```js
 function increaseApproval(address _spender, uint256 _addedValue) public
+returns(bool)
 ```
 
 **Arguments**
@@ -260,6 +299,7 @@ Decreases the approval of the spender.
 
 ```js
 function decreaseApproval(address _spender, uint256 _subtractedValue) public
+returns(bool)
 ```
 
 **Arguments**
@@ -275,6 +315,7 @@ Returns the sum of supplied values.
 
 ```js
 function sumOf(uint256[] _values) private
+returns(uint256)
 ```
 
 **Arguments**
@@ -289,6 +330,7 @@ Allows only the admins and/or whitelisted applications to perform bulk transfer 
 
 ```js
 function bulkTransfer(address[] _destinations, uint256[] _amounts) public
+
 ```
 
 **Arguments**
@@ -304,6 +346,7 @@ Burns the coins held by the sender.
 
 ```js
 function burn(uint256 _value) public
+
 ```
 
 **Arguments**

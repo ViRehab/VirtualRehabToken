@@ -6,6 +6,22 @@
 
 Base contract which allows children to implement an emergency stop mechanism.
 
+## Contract Members
+**Constants & Variables**
+
+```js
+bool public paused;
+
+```
+
+**Events**
+
+```js
+event Pause();
+event Unpause();
+
+```
+
 ## Modifiers
 
 - [whenNotPaused](#whennotpaused)
@@ -16,7 +32,7 @@ Base contract which allows children to implement an emergency stop mechanism.
 Modifier to make a function callable only when the contract is not paused.
 
 ```js
-modifier whenNotPaused () internal
+modifier whenNotPaused() internal
 ```
 
 **Arguments**
@@ -29,7 +45,7 @@ modifier whenNotPaused () internal
 Modifier to make a function callable only when the contract is paused.
 
 ```js
-modifier whenPaused () internal
+modifier whenPaused() internal
 ```
 
 **Arguments**
@@ -48,6 +64,7 @@ called by the owner to pause, triggers stopped state
 
 ```js
 function pause() public
+
 ```
 
 **Arguments**
@@ -61,6 +78,7 @@ called by the owner to unpause, returns to normal state
 
 ```js
 function unpause() public
+
 ```
 
 **Arguments**

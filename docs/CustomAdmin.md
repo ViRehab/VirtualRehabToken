@@ -10,7 +10,6 @@
 ```js
 mapping(address => bool) public admins;
 uint256 public numberOfAdmins;
-
 ```
 
 **Events**

@@ -12,12 +12,11 @@ This allows token holders to easily store and manage their VRH tokens using exis
 including ERC20-compatible Ethereum wallets. The VRH Token is a utility token 
 and is core to Virtual Rehab’s end-to-end operations.
  
-The $VRH utility token has four use cases:
-
-1. Allows users to order and download programs from Virtual Rehab Online Portal
-2. Allows users to request additional analysis (using Virtual Rehab unique expert system, which uses Artificial Intelligence) of executed programs
-3. Incentivizes users with $VRH tokens reward for seeking help and counselling from medical doctors, psychologists, and therapists (Proof of Therapy)
-4. Allows users to pay for services received at the Virtual Rehab Therapy Center (VRTC)
+VRH utility use cases include:
+1. Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
+2. Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
+3. Receive incentives (VRH rewards) for seeking help and counselling from psychologists, therapists, or medical doctors
+4. Allows users to pay for services received at the Virtual Rehab Therapy Center
 
 ## Contract Members
 **Constants & Variables**
@@ -31,10 +30,8 @@ uint256 public constant MAX_SUPPLY;
 uint256 public constant INITIAL_SUPPLY;
 bool public released;
 uint256 public ICOEndDate;
-
 //private members
 mapping(bytes32 => bool) private mintingList;
-
 ```
 
 **Events**

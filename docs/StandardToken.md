@@ -13,7 +13,6 @@ Based on code by FirstBlood: https://github.com/Firstbloodio/token/blob/master/s
 
 ```js
 mapping(address => mapping(address => uint256)) internal allowed;
-
 ```
 
 ## Functions

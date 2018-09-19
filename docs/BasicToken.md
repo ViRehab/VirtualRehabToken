@@ -12,7 +12,6 @@ Basic version of StandardToken, with no allowances.
 ```js
 mapping(address => uint256) internal balances;
 uint256 internal totalSupply_;
-
 ```
 
 ## Functions

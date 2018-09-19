@@ -11,7 +11,6 @@ Base contract which allows children to implement an emergency stop mechanism.
 
 ```js
 bool public paused;
-
 ```
 
 **Events**

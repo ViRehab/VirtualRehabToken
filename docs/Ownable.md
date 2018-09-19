@@ -10,7 +10,6 @@ functions, this simplifies the implementation of "user permissions".
 
 ```js
 address public owner;
-
 ```
 
 **Events**

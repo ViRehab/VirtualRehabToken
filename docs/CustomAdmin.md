@@ -15,9 +15,8 @@ uint256 public numberOfAdmins;
 **Events**
 
 ```js
-event AdminAdded(address addr);
-event AdminRemoved(address addr);
-
+event AdminAdded(address indexed addr);
+event AdminRemoved(address indexed addr);
 ```
 
 ## Modifiers
@@ -47,8 +46,7 @@ modifier onlyAdmin() internal
 Add an address to the adminstrator list.
 
 ```js
-function addAdmin(address addr) public
-
+function addAdmin(address addr) public onlyAdmin
 ```
 
 **Arguments**
@@ -62,8 +60,7 @@ function addAdmin(address addr) public
 Remove an address from the administrator list.
 
 ```js
-function removeAdmin(address addr) public
-
+function removeAdmin(address addr) public onlyAdmin
 ```
 
 **Arguments**

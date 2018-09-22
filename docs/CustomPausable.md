@@ -18,7 +18,6 @@ bool public paused;
 ```js
 event Pause();
 event Unpause();
-
 ```
 
 ## Modifiers
@@ -62,28 +61,16 @@ modifier whenPaused() internal
 called by the owner to pause, triggers stopped state
 
 ```js
-function pause() public
-
+function pause() public onlyAdmin whenNotPaused
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ### unpause
 
 called by the owner to unpause, returns to normal state
 
 ```js
-function unpause() public
-
+function unpause() public onlyAdmin whenPaused
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ## Contracts
 

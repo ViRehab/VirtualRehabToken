@@ -37,11 +37,10 @@ mapping(bytes32 => bool) private mintingList;
 **Events**
 
 ```js
-event Mint(address to, uint256 amount);
+event Mint(address indexed to, uint256 amount);
 event BulkTransferPerformed(address[] _destinations, uint256[] _amounts);
 event TokenReleased(bool _state);
 event ICOEndDateSet(uint256 _date);
-
 ```
 
 ## Modifiers
@@ -102,7 +101,7 @@ modifier whenNotMinted(string _key) internal
 Computes keccak256 hash of the supplied value.
 
 ```js
-function computeHash(string _key) private
+function computeHash(string _key) private pure
 returns(bytes32)
 ```
 
@@ -118,36 +117,23 @@ This function enables token transfers for everyone.
 Can only be enabled after the end of the ICO.
 
 ```js
-function releaseTokenForTransfer() public
-
+function releaseTokenForTransfer() public onlyAdmin whenNotPaused
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ### disableTokenTransfers
 
 This function disables token transfers for everyone.
 
 ```js
-function disableTokenTransfers() public
-
+function disableTokenTransfers() public onlyAdmin whenNotPaused
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ### setICOEndDate
 
 This function enables the whitelisted application (internal application) to set the ICO end date and can only be used once.
 
 ```js
-function setICOEndDate(uint256 _date) public
-
+function setICOEndDate(uint256 _date) public onlyAdmin
 ```
 
 **Arguments**
@@ -160,7 +146,6 @@ function setICOEndDate(uint256 _date) public
 
 ```js
 function mintTokens(address _to, uint256 _value) private
-
 ```
 
 **Arguments**
@@ -175,8 +160,7 @@ function mintTokens(address _to, uint256 _value) private
 Mints the tokens only once against the supplied key (category).
 
 ```js
-function mintOnce(string _key, address _to, uint256 _amount) private
-
+function mintOnce(string _key, address _to, uint256 _amount) private whenNotPaused whenNotMinted
 ```
 
 **Arguments**
@@ -192,47 +176,31 @@ function mintOnce(string _key, address _to, uint256 _amount) private
 Mints the below-mentioned amount of tokens allocated to the Virtual Rehab advisors.
 
 ```js
-function mintTokensForAdvisors() public
-
+function mintTokensForAdvisors() public onlyAdmin
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ### mintTokensForFounders
 
 Mints the below-mentioned amount of tokens allocated to the Virtual Rehab founders.
 
 ```js
-function mintTokensForFounders() public
-
+function mintTokensForFounders() public onlyAdmin
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ### mintTokensForServices
 
 Mints the below-mentioned amount of tokens allocated to Virtual Rehab services.
 
 ```js
-function mintTokensForServices() public
-
+function mintTokensForServices() public onlyAdmin
 ```
-
-**Arguments**
-
-| Name        | Type           | Description  |
-| ------------- |------------- | -----|
 
 ### transfer
 
+:small_red_triangle: overrides [ERC20Basic.transfer](#ERC20Basic#transfer)
+
 ```js
-function transfer(address _to, uint256 _value) public
+function transfer(address _to, uint256 _value) public canTransfer
 returns(bool)
 ```
 
@@ -245,10 +213,12 @@ returns(bool)
 
 ### transferFrom
 
+:small_red_triangle: overrides [ERC20Basic.transferFrom](#ERC20Basic#transferfrom)
+
 Transfers tokens from a specified wallet address.
 
 ```js
-function transferFrom(address _from, address _to, uint256 _value) public
+function transferFrom(address _from, address _to, uint256 _value) public canTransfer
 returns(bool)
 ```
 
@@ -262,10 +232,12 @@ returns(bool)
 
 ### approve
 
+:small_red_triangle: overrides [ERC20Basic.approve](#ERC20Basic#approve)
+
 Approves a wallet address to spend on behalf of the sender.
 
 ```js
-function approve(address _spender, uint256 _value) public
+function approve(address _spender, uint256 _value) public canTransfer
 returns(bool)
 ```
 
@@ -278,10 +250,12 @@ returns(bool)
 
 ### increaseApproval
 
+:small_red_triangle: overrides [ERC20Basic.increaseApproval](#ERC20Basic#increaseapproval)
+
 Increases the approval of the spender.
 
 ```js
-function increaseApproval(address _spender, uint256 _addedValue) public
+function increaseApproval(address _spender, uint256 _addedValue) public canTransfer
 returns(bool)
 ```
 
@@ -294,10 +268,12 @@ returns(bool)
 
 ### decreaseApproval
 
+:small_red_triangle: overrides [ERC20Basic.decreaseApproval](#ERC20Basic#decreaseapproval)
+
 Decreases the approval of the spender.
 
 ```js
-function decreaseApproval(address _spender, uint256 _subtractedValue) public
+function decreaseApproval(address _spender, uint256 _subtractedValue) public canTransfer
 returns(bool)
 ```
 
@@ -313,7 +289,7 @@ returns(bool)
 Returns the sum of supplied values.
 
 ```js
-function sumOf(uint256[] _values) private
+function sumOf(uint256[] _values) private pure
 returns(uint256)
 ```
 
@@ -328,8 +304,7 @@ returns(uint256)
 Allows only the admins and/or whitelisted applications to perform bulk transfer operation.
 
 ```js
-function bulkTransfer(address[] _destinations, uint256[] _amounts) public
-
+function bulkTransfer(address[] _destinations, uint256[] _amounts) public onlyAdmin
 ```
 
 **Arguments**
@@ -341,11 +316,12 @@ function bulkTransfer(address[] _destinations, uint256[] _amounts) public
 
 ### burn
 
+:small_red_triangle: overrides [ERC20Basic.burn](#ERC20Basic#burn)
+
 Burns the coins held by the sender.
 
 ```js
-function burn(uint256 _value) public
-
+function burn(uint256 _value) public whenNotPaused
 ```
 
 **Arguments**

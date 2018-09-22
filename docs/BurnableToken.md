@@ -9,8 +9,7 @@ Token that can be irreversibly burned (destroyed).
 **Events**
 
 ```js
-event Burn(address burner, uint256 value);
-
+event Burn(address indexed burner, uint256 value);
 ```
 
 ## Functions
@@ -24,7 +23,6 @@ Burns a specific amount of tokens.
 
 ```js
 function burn(uint256 _value) public
-
 ```
 
 **Arguments**
@@ -37,7 +35,6 @@ function burn(uint256 _value) public
 
 ```js
 function _burn(address _who, uint256 _value) internal
-
 ```
 
 **Arguments**

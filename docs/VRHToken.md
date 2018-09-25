@@ -113,7 +113,7 @@ returns(bytes32)
 
 ### releaseTokenForTransfer
 
-This function enables token transfers for everyone. 
+This function enables token transfers for everyone.
 Can only be enabled after the end of the ICO.
 
 ```js
@@ -197,7 +197,7 @@ function mintTokensForServices() public onlyAdmin
 
 ### transfer
 
-:small_red_triangle: overrides [ERC20Basic.transfer](#ERC20Basic#transfer)
+:small_red_triangle: overrides [BasicToken.transfer](BasicToken.md#transfer)
 
 ```js
 function transfer(address _to, uint256 _value) public canTransfer
@@ -213,7 +213,7 @@ returns(bool)
 
 ### transferFrom
 
-:small_red_triangle: overrides [ERC20Basic.transferFrom](#ERC20Basic#transferfrom)
+:small_red_triangle: overrides [StandardToken.transferFrom](StandardToken.md#transferfrom)
 
 Transfers tokens from a specified wallet address.
 
@@ -232,7 +232,7 @@ returns(bool)
 
 ### approve
 
-:small_red_triangle: overrides [ERC20Basic.approve](#ERC20Basic#approve)
+:small_red_triangle: overrides [StandardToken.approve](StandardToken.md#approve)
 
 Approves a wallet address to spend on behalf of the sender.
 
@@ -250,7 +250,7 @@ returns(bool)
 
 ### increaseApproval
 
-:small_red_triangle: overrides [ERC20Basic.increaseApproval](#ERC20Basic#increaseapproval)
+:small_red_triangle: overrides [StandardToken.increaseApproval](StandardToken.md#increaseapproval)
 
 Increases the approval of the spender.
 
@@ -268,7 +268,7 @@ returns(bool)
 
 ### decreaseApproval
 
-:small_red_triangle: overrides [ERC20Basic.decreaseApproval](#ERC20Basic#decreaseapproval)
+:small_red_triangle: overrides [StandardToken.decreaseApproval](StandardToken.md#decreaseapproval)
 
 Decreases the approval of the spender.
 
@@ -316,7 +316,7 @@ function bulkTransfer(address[] _destinations, uint256[] _amounts) public onlyAd
 
 ### burn
 
-:small_red_triangle: overrides [ERC20Basic.burn](#ERC20Basic#burn)
+:small_red_triangle: overrides [BurnableToken.burn](BurnableToken.md#burn)
 
 Burns the coins held by the sender.
 

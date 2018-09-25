@@ -16,8 +16,8 @@ contract('token', function(accounts) {
     it('must correctly deploy with correct parameters and state variables.', async () => {
       let token = await Token.new();
       let owner = accounts[0];
-      let expectedMaxSupply = 400000000;
-      let expectedInitialSupply = expectedMaxSupply -  60000000 - 750000 - 2085000;
+      let expectedMaxSupply = 400900000;
+      let expectedInitialSupply = expectedMaxSupply -  60000000 - 1650000 - 2085000;
 
       assert(await token.owner() === owner);
       assert(await token.released() === false);
@@ -131,7 +131,7 @@ contract('token', function(accounts) {
 
     it('must not allow minting when token is paused.', async () => {
       let years_3 = ICOEndDate + duration.years(3);
-      
+
       await increaseTimeTo(years_3);
       await token.pause();
 
@@ -151,7 +151,7 @@ contract('token', function(accounts) {
       let foundersWallet = accounts[4];
       await token.addAdmin(foundersWallet);
 
-      let moreThan1year = ICOEndDate + duration.years(1);
+      let moreThan1year = ICOEndDate + duration.years(2);
       let prevSupply = await token.totalSupply();
 
       await increaseTimeTo(moreThan1year + 10);
@@ -167,9 +167,9 @@ contract('token', function(accounts) {
       let foundersWallet = accounts[4];
       await token.addAdmin(foundersWallet);
 
-      let moreThan1year = ICOEndDate + duration.years(1);
+      let moreThan2year = ICOEndDate + duration.years(2);
 
-      await increaseTimeTo(moreThan1year + 10);
+      await increaseTimeTo(moreThan2year + 10);
       await token.mintTokensForFounders({ from: foundersWallet });
       await token.mintTokensForFounders( { from:  foundersWallet }).should.be.rejectedWith(EVMRevert);
     });
@@ -187,9 +187,9 @@ contract('token', function(accounts) {
       let prevSupply = await token.totalSupply();
       await increaseTimeTo(moreThan1year + 10);
       await token.mintTokensForAdvisors({ from: advisorsWallet });
-      (await token.balanceOf(advisorsWallet)).should.be.bignumber.equal(ether(750000));
+      (await token.balanceOf(advisorsWallet)).should.be.bignumber.equal(ether(1650000));
       let currentSupply = await token.totalSupply();
-      (currentSupply.sub(prevSupply)).should.be.bignumber.equal(ether(750000));
+      (currentSupply.sub(prevSupply)).should.be.bignumber.equal(ether(1650000));
     });
 
     it('must not allow advisor token allocation to be minted more than once.', async () => {
@@ -228,7 +228,7 @@ contract('token', function(accounts) {
     it('must not allow service token allocation to be minted more than once.', async () => {
       let servicesWallet = accounts[5];
       await token.addAdmin(servicesWallet);
-      
+
       let twoMonths = ICOEndDate + duration.days(60);
       await increaseTimeTo(twoMonths + 10);
       await token.mintTokensForServices({ from: servicesWallet });
@@ -287,7 +287,7 @@ contract('token', function(accounts) {
 
   describe('ERC20 Feature Ruleset (When Transfer State is Disabled)', async () => {
     let token;
-    
+
     beforeEach(async () => {
       token = await Token.new();
       await token.addAdmin(accounts[1]);
@@ -491,7 +491,7 @@ contract('token', function(accounts) {
     it('must revert when the balance is less than the sum.', async () => {
       const balances = [];
       const destinations = [];
- 
+
       for(let i=1;i<4;i++) {
         destinations.push(accounts[i]);
         balances.push(i);
@@ -501,7 +501,7 @@ contract('token', function(accounts) {
 
       await token.transfer(accounts[6], currentBalance);
       await token.bulkTransfer(destinations, balances, { from: accounts[0] }).should.be.rejectedWith(EVMRevert);
-    });    
+    });
   });
 
 

@@ -40,8 +40,8 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   string public constant name = "VirtualRehab";
   string public constant symbol = "VRH";
 
-  uint public constant MAX_SUPPLY = 400000000 * (10 ** uint256(decimals));
-  uint public constant INITIAL_SUPPLY = (400000000 - 750000 - 2085000 - 60000000) * (10 ** uint256(decimals));
+  uint public constant MAX_SUPPLY = 400900000 * (10 ** uint256(decimals));
+  uint public constant INITIAL_SUPPLY = (400900000 - 1650000 - 2085000 - 60000000) * (10 ** uint256(decimals));
 
   bool public released = false;
   uint public ICOEndDate;
@@ -84,12 +84,11 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
 
   constructor() public {
     mintTokens(msg.sender, INITIAL_SUPPLY);
-    emit Transfer(address(0), msg.sender, totalSupply_);
   }
 
 
 
-  ///@notice This function enables token transfers for everyone. 
+  ///@notice This function enables token transfers for everyone.
   ///Can only be enabled after the end of the ICO.
   function releaseTokenForTransfer() public onlyAdmin whenNotPaused {
     require(!released);
@@ -145,25 +144,25 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
     mintingList[computeHash(_key)] = true;
   }
 
-  ///@notice Mints the below-mentioned amount of tokens allocated to the Virtual Rehab advisors. 
+  ///@notice Mints the below-mentioned amount of tokens allocated to the Virtual Rehab advisors.
   //The tokens are only available to the advisors after 1 year of the ICO end.
   function mintTokensForAdvisors() public onlyAdmin {
     require(ICOEndDate != 0);
 
     require(now > (ICOEndDate + 365 days));
-    mintOnce("advisors", msg.sender, 750000);
+    mintOnce("advisors", msg.sender, 1650000);
   }
 
-  ///@notice Mints the below-mentioned amount of tokens allocated to the Virtual Rehab founders. 
-  //The tokens are only available to the founders after 1 year of the ICO end.
+  ///@notice Mints the below-mentioned amount of tokens allocated to the Virtual Rehab founders.
+  //The tokens are only available to the founders after 2 year of the ICO end.
   function mintTokensForFounders() public onlyAdmin {
     require(ICOEndDate != 0);
-    require(now > (ICOEndDate + 365 days));
+    require(now > (ICOEndDate + 730 days));
 
     mintOnce("founders", msg.sender, 60000000);
   }
 
-  ///@notice Mints the below-mentioned amount of tokens allocated to Virtual Rehab services. 
+  ///@notice Mints the below-mentioned amount of tokens allocated to Virtual Rehab services.
   //The tokens are only available to the services after 1 year of the ICO end.
   function mintTokensForServices() public onlyAdmin  {
     require(ICOEndDate != 0);

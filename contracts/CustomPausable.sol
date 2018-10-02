@@ -13,53 +13,42 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
  */
- 
- 
+
+
  pragma solidity 0.4.24;
 
 
 import "./CustomAdmin.sol";
 
 
-/**
- * @title Pausable
- * @dev Base contract which allows children to implement an emergency stop mechanism.
- */
+///@title This contract enables you to create pausable mechanism to stop in case of emergency.
 contract CustomPausable is CustomAdmin {
-  event Pause();
-  event Unpause();
+  event Paused();
+  event Unpaused();
 
   bool public paused = false;
 
-  /**
-   * @dev Modifier to make a function callable only when the contract is not paused.
-   */
+  ///@notice Verifies whether the contract is not paused.
   modifier whenNotPaused() {
     require(!paused);
     _;
   }
 
-  /**
-   * @dev Modifier to make a function callable only when the contract is paused.
-   */
+  ///@notice Verifies whether the contract is paused.
   modifier whenPaused() {
     require(paused);
     _;
   }
 
-  /**
-   * @dev called by the owner to pause, triggers stopped state
-   */
-  function pause() onlyAdmin whenNotPaused public {
+  ///@notice Pauses the contract.
+  function pause() external onlyAdmin whenNotPaused {
     paused = true;
-    emit Pause();
+    emit Paused();
   }
 
-  /**
-   * @dev called by the owner to unpause, returns to normal state
-   */
-  function unpause() onlyAdmin whenPaused public {
+  ///@notice Unpauses the contract and returns to normal state.
+  function unpause() external onlyAdmin whenPaused {
     paused = false;
-    emit Unpause();
+    emit Unpaused();
   }
 }

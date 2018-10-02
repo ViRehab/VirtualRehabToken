@@ -24,8 +24,6 @@ contract('token', function(accounts) {
       assert((await token.decimals()).toNumber() === 18);
       assert(await token.name() === 'VirtualRehab');
       assert(await token.symbol() === 'VRH');
-      assert(await token.admins(owner));
-      assert((await token.numberOfAdmins()).toNumber() === 1);
 
       (await token.MAX_SUPPLY()).should.bignumber.equal(ether(expectedMaxSupply));
       (await token.totalSupply()).should.bignumber.equal(ether(expectedInitialSupply));
@@ -54,9 +52,7 @@ contract('token', function(accounts) {
     it('must correctly count the number of admins.', async () => {
       await token.addAdmin(accounts[1]);
       assert(await token.admins(accounts[1]));
-
       await token.addAdmin(accounts[2], { from: accounts[3]}).should.be.rejectedWith(EVMRevert);
-      assert((await token.numberOfAdmins()).toNumber() == 2);
     });
 
     it('must allow admins to be removed by other admins.', async () => {
@@ -343,7 +339,6 @@ contract('token', function(accounts) {
     it('must only allow an admin to transfer from approved accounts when the transfer state is disabled.', async () => {
       await token.approve(accounts[3], 10);
       await token.transferFrom(accounts[0], accounts[2], 1, { from: accounts[3] });
-
       let balance = await token.balanceOf(accounts[2]);
       assert(balance.toNumber() === 1);
 

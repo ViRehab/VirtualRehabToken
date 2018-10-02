@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
- 
+
 pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
@@ -22,14 +22,14 @@ import "./CustomPausable.sol";
 
 ///@title Virtual Rehab Token (VRH) ERC20 Token Contract
 ///@author Binod Nirvan, Subramanian Venkatesan (http://virtualrehab.co)
-///@notice The Virtual Rehab Token (VRH) has been created as a centralized currency 
-///to be used within the Virtual Rehab network. Users will be able to purchase and sell 
-///VRH tokens in exchanges. The token follows the standards of Ethereum ERC20 Standard token. 
-///Its design follows the widely adopted token implementation standards. 
-///This allows token holders to easily store and manage their VRH tokens using existing solutions 
-///including ERC20-compatible Ethereum wallets. The VRH Token is a utility token 
+///@notice The Virtual Rehab Token (VRH) has been created as a centralized currency
+///to be used within the Virtual Rehab network. Users will be able to purchase and sell
+///VRH tokens in exchanges. The token follows the standards of Ethereum ERC20 Standard token.
+///Its design follows the widely adopted token implementation standards.
+///This allows token holders to easily store and manage their VRH tokens using existing solutions
+///including ERC20-compatible Ethereum wallets. The VRH Token is a utility token
 ///and is core to Virtual Rehab’s end-to-end operations.
-/// 
+///
 ///VRH utility use cases include:
 ///1. Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
 ///2. Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
@@ -58,7 +58,7 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   ///@param _from The address to check against if the transfer is allowed.
   modifier canTransfer(address _from) {
     if(paused || !released) {
-      if(!admins[_from]) {
+      if(!isAdmin(_from)) {
         revert();
       }
     }
@@ -114,7 +114,7 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
     require(_date > now);
 
     ICOEndDate = _date;
-    
+
     emit ICOEndDateSet(_date);
   }
 
@@ -171,8 +171,8 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
     mintOnce("services", msg.sender, 2085000);
   }
 
-  ///@notice Transfers the specified value of VRH tokens to the destination address. 
-  //Transfers can only happen when the tranfer state is enabled. 
+  ///@notice Transfers the specified value of VRH tokens to the destination address.
+  //Transfers can only happen when the tranfer state is enabled.
   //Transfer state can only be enabled after the end of the crowdsale.
   ///@param _to The destination wallet address to transfer funds to.
   ///@param _value The amount of tokens to send to the destination address.
@@ -194,7 +194,7 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   ///@notice Approves a wallet address to spend on behalf of the sender.
   ///@dev This function is overriden to leverage transfer state feature.
   ///@param _spender The address which is approved to spend on behalf of the sender.
-  ///@param _value The amount of tokens approve to spend. 
+  ///@param _value The amount of tokens approve to spend.
   function approve(address _spender, uint256 _value) public canTransfer(msg.sender) returns (bool) {
     require(_spender != address(0));
     return super.approve(_spender, _value);
@@ -220,7 +220,7 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   }
 
   ///@notice Returns the sum of supplied values.
-  ///@param _values The collection of values to create the sum from.  
+  ///@param _values The collection of values to create the sum from.
   function sumOf(uint256[] _values) private pure returns(uint256) {
     uint256 total = 0;
 
@@ -230,10 +230,10 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
 
     return total;
   }
-  
+
   ///@notice Allows only the admins and/or whitelisted applications to perform bulk transfer operation.
   ///@param _destinations The destination wallet addresses to send funds to.
-  ///@param _amounts The respective amount of fund to send to the specified addresses. 
+  ///@param _amounts The respective amount of fund to send to the specified addresses.
   function bulkTransfer(address[] _destinations, uint256[] _amounts) public onlyAdmin {
     require(_destinations.length == _amounts.length);
 
@@ -241,7 +241,7 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
     //to post this transaction.
     uint256 requiredBalance = sumOf(_amounts);
     require(balances[msg.sender] >= requiredBalance);
-    
+
     for (uint256 i = 0; i < _destinations.length; i++) {
      transfer(_destinations[i], _amounts[i]);
     }

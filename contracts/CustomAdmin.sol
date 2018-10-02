@@ -18,54 +18,81 @@ pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+///@title This contract enables to create multiple contract administrators.
 contract CustomAdmin is Ownable {
+  ///@notice List of administrators.
   mapping(address => bool) public admins;
-  uint256 public numberOfAdmins;
 
-  event AdminAdded(address indexed addr);
-  event AdminRemoved(address indexed addr);
+  event AdminAdded(address indexed _address);
+  event AdminRemoved(address indexed _address);
 
-  /**
-   * @dev Throws if called by any account that's not an administrator.
-   */
+  ///@notice Validates if the sender is actually an administrator.
   modifier onlyAdmin() {
     require(admins[msg.sender] || msg.sender == owner);
     _;
   }
 
-  constructor() public {
-    admins[msg.sender] = true;
-    numberOfAdmins = 1;
-    
-    emit AdminAdded(msg.sender);
-  }
-  /**
-   * @dev Add an address to the adminstrator list.
-   * @param addr address
-   */
-  function addAdmin(address addr) onlyAdmin  public {
-    require(addr != address(0));
-    require(!admins[addr]);
+  ///@notice Adds the specified address to the list of administrators.
+  ///@param _address The address to add to the administrator list.
+  function addAdmin(address _address) external onlyAdmin {
+    require(_address != address(0));
+    require(!admins[_address]);
 
-    admins[addr] = true;
-    numberOfAdmins++;
+    //The owner is already an admin and cannot be added.
+    require(_address != owner);
 
-    emit AdminAdded(addr);
+    admins[_address] = true;
+
+    emit AdminAdded(_address);
   }
 
-  /**
-   * @dev Remove an address from the administrator list.
-   * @param addr address
-   */
-  function removeAdmin(address addr) onlyAdmin  public {
-    require(addr != address(0));
-    require(admins[addr]);
-    //the owner can not be unadminsed
-    require(addr != owner);
+  ///@notice Adds multiple addresses to the administrator list.
+  ///@param _accounts The wallet addresses to add to the administrator list.
+  function addManyAdmins(address[] _accounts) external onlyAdmin {
+    for(uint8 i=0; i<_accounts.length; i++) {
+      address account = _accounts[i];
 
-    admins[addr] = false;
-    numberOfAdmins--;
+      ///Zero address cannot be an admin.
+      ///The owner is already an admin and cannot be assigned.
+      ///The address cannot be an existing admin.
+      if(account != address(0) && !admins[account] && account != owner){
+        admins[account] = true;
 
-    emit AdminRemoved(addr);
+        emit AdminAdded(_accounts[i]);
+      }
+    }
+  }
+
+  ///@notice Removes the specified address from the list of administrators.
+  ///@param _address The address to remove from the administrator list.
+  function removeAdmin(address _address) external onlyAdmin {
+    require(_address != address(0));
+    require(admins[_address]);
+
+    //The owner cannot be removed as admin.
+    require(_address != owner);
+
+    admins[_address] = false;
+    emit AdminRemoved(_address);
+  }
+
+  function isAdmin(address _account) view public returns(bool) {
+    return admins[_account] || _account == owner;
+  }
+  ///@notice Removes multiple addresses to the administrator list.
+  ///@param _accounts The wallet addresses to remove from the administrator list.
+  function removeManyAdmins(address[] _accounts) external onlyAdmin {
+    for(uint8 i=0; i<_accounts.length; i++) {
+      address account = _accounts[i];
+
+      ///Zero address can neither be added or removed from this list.
+      ///The owner is the super admin and cannot be removed.
+      ///The address must be an existing admin in order for it to be removed.
+      if(account != address(0) && admins[account] && account != owner){
+        admins[account] = false;
+
+        emit AdminRemoved(_accounts[i]);
+      }
+    }
   }
 }

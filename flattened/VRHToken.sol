@@ -1,28 +1,4 @@
-/*
-Copyright 2018 Virtual Rehab (http://virtualrehab.co)
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 pragma solidity 0.4.24;
-
-
-
-
-
-
-
-
 
 /**
  * @title ERC20Basic
@@ -35,9 +11,6 @@ contract ERC20Basic {
   function transfer(address _to, uint256 _value) public returns (bool);
   event Transfer(address indexed from, address indexed to, uint256 value);
 }
-
-
-
 
 /**
  * @title SafeMath
@@ -89,8 +62,6 @@ library SafeMath {
   }
 }
 
-
-
 /**
  * @title Basic token
  * @dev Basic version of StandardToken, with no allowances.
@@ -135,11 +106,6 @@ contract BasicToken is ERC20Basic {
 
 }
 
-
-
-
-
-
 /**
  * @title ERC20 interface
  * @dev see https://github.com/ethereum/EIPs/issues/20
@@ -158,8 +124,6 @@ contract ERC20 is ERC20Basic {
     uint256 value
   );
 }
-
-
 
 /**
  * @title Standard ERC20 token
@@ -280,11 +244,6 @@ contract StandardToken is ERC20, BasicToken {
 
 }
 
-
-
-
-
-
 /**
  * @title Burnable Token
  * @dev Token that can be irreversibly burned (destroyed).
@@ -312,47 +271,6 @@ contract BurnableToken is BasicToken {
     emit Transfer(_who, address(0), _value);
   }
 }
-
-/*
-Copyright 2018 Binod Nirvan
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
-
-
- 
-
-
-/*
-Copyright 2018 Binod Nirvan
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
-
-
-
-
-
 
 /**
  * @title Ownable
@@ -416,6 +334,25 @@ contract Ownable {
   }
 }
 
+/*
+Copyright 2018 Binod Nirvan
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
+
+
+
 
 ///@title This contract enables to create multiple contract administrators.
 contract CustomAdmin is Ownable {
@@ -478,6 +415,7 @@ contract CustomAdmin is Ownable {
   function isAdmin(address _account) view public returns(bool) {
     return admins[_account] || _account == owner;
   }
+  
   ///@notice Removes multiple addresses to the administrator list.
   ///@param _accounts The wallet addresses to remove from the administrator list.
   function removeManyAdmins(address[] _accounts) external onlyAdmin {
@@ -495,6 +433,27 @@ contract CustomAdmin is Ownable {
     }
   }
 }
+
+/*
+Copyright 2018 Binod Nirvan
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
+
+ 
+
+
 
 
 
@@ -530,6 +489,27 @@ contract CustomPausable is CustomAdmin {
   }
 }
 
+/*
+Copyright 2018 Virtual Rehab (http://virtualrehab.co)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+
+
+
+
 
 ///@title Virtual Rehab Token (VRH) ERC20 Token Contract
 ///@author Binod Nirvan, Subramanian Venkatesan (http://virtualrehab.co)
@@ -551,8 +531,8 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   string public constant name = "VirtualRehab";
   string public constant symbol = "VRH";
 
-  uint public constant MAX_SUPPLY = 400900000 * (10 ** uint256(decimals));
-  uint public constant INITIAL_SUPPLY = (400900000 - 1650000 - 2085000 - 60000000) * (10 ** uint256(decimals));
+  uint public constant MAX_SUPPLY = 400000000 * (10 ** uint256(decimals));
+  uint public constant INITIAL_SUPPLY = (400000000 - 1650000 - 2085000 - 60000000) * (10 ** uint256(decimals));
 
   bool public released = false;
   uint public ICOEndDate;
@@ -668,7 +648,7 @@ contract VRHToken is StandardToken, CustomPausable, BurnableToken {
   //The tokens are only available to the founders after 2 year of the ICO end.
   function mintTokensForFounders() public onlyAdmin {
     require(ICOEndDate != 0);
-    require(now > (ICOEndDate + 730 days));
+    require(now > (ICOEndDate + 720 days));
 
     mintOnce("founders", msg.sender, 60000000);
   }

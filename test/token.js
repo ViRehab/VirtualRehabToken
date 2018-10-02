@@ -16,7 +16,7 @@ contract('token', function(accounts) {
     it('must correctly deploy with correct parameters and state variables.', async () => {
       let token = await Token.new();
       let owner = accounts[0];
-      let expectedMaxSupply = 400900000;
+      let expectedMaxSupply = 400000000;
       let expectedInitialSupply = expectedMaxSupply -  60000000 - 1650000 - 2085000;
 
       assert(await token.owner() === owner);

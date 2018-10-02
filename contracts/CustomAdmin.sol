@@ -79,6 +79,7 @@ contract CustomAdmin is Ownable {
   function isAdmin(address _account) view public returns(bool) {
     return admins[_account] || _account == owner;
   }
+  
   ///@notice Removes multiple addresses to the administrator list.
   ///@param _accounts The wallet addresses to remove from the administrator list.
   function removeManyAdmins(address[] _accounts) external onlyAdmin {

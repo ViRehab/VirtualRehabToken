@@ -4,15 +4,15 @@
 
 **VRHToken**
 
-The Virtual Rehab Token (VRH) has been created as a centralized currency 
-to be used within the Virtual Rehab network. Users will be able to purchase and sell 
-VRH tokens in exchanges. The token follows the standards of Ethereum ERC20 Standard token. 
-Its design follows the widely adopted token implementation standards. 
-This allows token holders to easily store and manage their VRH tokens using existing solutions 
-including ERC20-compatible Ethereum wallets. The VRH Token is a utility token 
+The Virtual Rehab Token (VRH) has been created as a centralized currency
+to be used within the Virtual Rehab network. Users will be able to purchase and sell
+VRH tokens in exchanges. The token follows the standards of Ethereum ERC20 Standard token.
+Its design follows the widely adopted token implementation standards.
+This allows token holders to easily store and manage their VRH tokens using existing solutions
+including ERC20-compatible Ethereum wallets. The VRH Token is a utility token
 and is core to Virtual Rehab’s end-to-end operations.
- 
-VRH utility use cases include:
+
+///VRH utility use cases include:
 1. Order & Download Virtual Rehab programs through the Virtual Rehab Online Portal
 2. Request further analysis, conducted by Virtual Rehab's unique expert system (which leverages Artificial Intelligence), of the executed programs
 3. Receive incentives (VRH rewards) for seeking help and counselling from psychologists, therapists, or medical doctors
@@ -30,6 +30,7 @@ uint256 public constant MAX_SUPPLY;
 uint256 public constant INITIAL_SUPPLY;
 bool public released;
 uint256 public ICOEndDate;
+
 //private members
 mapping(bytes32 => bool) private mintingList;
 ```

@@ -1,4 +1,4 @@
-﻿# CustomAdmin.sol
+﻿# This contract enables to create multiple contract administrators. (CustomAdmin.sol)
 
 **contract CustomAdmin is [Ownable](Ownable.md)**
 
@@ -9,14 +9,13 @@
 
 ```js
 mapping(address => bool) public admins;
-uint256 public numberOfAdmins;
 ```
 
 **Events**
 
 ```js
-event AdminAdded(address indexed addr);
-event AdminRemoved(address indexed addr);
+event AdminAdded(address indexed _address);
+event AdminRemoved(address indexed _address);
 ```
 
 ## Modifiers
@@ -25,7 +24,7 @@ event AdminRemoved(address indexed addr);
 
 ### onlyAdmin
 
-Throws if called by any account that's not an administrator.
+Validates if the sender is actually an administrator.
 
 ```js
 modifier onlyAdmin() internal
@@ -39,35 +38,79 @@ modifier onlyAdmin() internal
 ## Functions
 
 - [addAdmin](#addadmin)
+- [addManyAdmins](#addmanyadmins)
 - [removeAdmin](#removeadmin)
+- [isAdmin](#isadmin)
+- [removeManyAdmins](#removemanyadmins)
 
 ### addAdmin
 
-Add an address to the adminstrator list.
+Adds the specified address to the list of administrators.
 
 ```js
-function addAdmin(address addr) public onlyAdmin
+function addAdmin(address _address) external onlyAdmin
 ```
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| addr | address | address | 
+| _address | address | The address to add to the administrator list. | 
+
+### addManyAdmins
+
+Adds multiple addresses to the administrator list.
+
+```js
+function addManyAdmins(address[] _accounts) external onlyAdmin
+```
+
+**Arguments**
+
+| Name        | Type           | Description  |
+| ------------- |------------- | -----|
+| _accounts | address[] | The wallet addresses to add to the administrator list. | 
 
 ### removeAdmin
 
-Remove an address from the administrator list.
+Removes the specified address from the list of administrators.
 
 ```js
-function removeAdmin(address addr) public onlyAdmin
+function removeAdmin(address _address) external onlyAdmin
 ```
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| addr | address | address | 
+| _address | address | The address to remove from the administrator list. | 
+
+### isAdmin
+
+```js
+function isAdmin(address _account) public view
+returns(bool)
+```
+
+**Arguments**
+
+| Name        | Type           | Description  |
+| ------------- |------------- | -----|
+| _account | address |  | 
+
+### removeManyAdmins
+
+Removes multiple addresses to the administrator list.
+
+```js
+function removeManyAdmins(address[] _accounts) external onlyAdmin
+```
+
+**Arguments**
+
+| Name        | Type           | Description  |
+| ------------- |------------- | -----|
+| _accounts | address[] | The wallet addresses to remove from the administrator list. | 
 
 ## Contracts
 

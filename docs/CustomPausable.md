@@ -1,10 +1,8 @@
-﻿# Pausable (CustomPausable.sol)
+﻿# This contract enables you to create pausable mechanism to stop in case of emergency. (CustomPausable.sol)
 
 **contract CustomPausable is [CustomAdmin](CustomAdmin.md)**
 
 **CustomPausable**
-
-Base contract which allows children to implement an emergency stop mechanism.
 
 ## Contract Members
 **Constants & Variables**
@@ -16,8 +14,8 @@ bool public paused;
 **Events**
 
 ```js
-event Pause();
-event Unpause();
+event Paused();
+event Unpaused();
 ```
 
 ## Modifiers
@@ -27,7 +25,7 @@ event Unpause();
 
 ### whenNotPaused
 
-Modifier to make a function callable only when the contract is not paused.
+Verifies whether the contract is not paused.
 
 ```js
 modifier whenNotPaused() internal
@@ -40,7 +38,7 @@ modifier whenNotPaused() internal
 
 ### whenPaused
 
-Modifier to make a function callable only when the contract is paused.
+Verifies whether the contract is paused.
 
 ```js
 modifier whenPaused() internal
@@ -58,18 +56,18 @@ modifier whenPaused() internal
 
 ### pause
 
-called by the owner to pause, triggers stopped state
+Pauses the contract.
 
 ```js
-function pause() public onlyAdmin whenNotPaused
+function pause() external onlyAdmin whenNotPaused
 ```
 
 ### unpause
 
-called by the owner to unpause, returns to normal state
+Unpauses the contract and returns to normal state.
 
 ```js
-function unpause() public onlyAdmin whenPaused
+function unpause() external onlyAdmin whenPaused
 ```
 
 ## Contracts

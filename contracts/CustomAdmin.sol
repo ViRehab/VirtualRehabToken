@@ -76,6 +76,8 @@ contract CustomAdmin is Ownable {
     emit AdminRemoved(_address);
   }
 
+  ///@notice Returns true or fals
+  ///@param _address The address to account to check
   function isAdmin(address _account) view public returns(bool) {
     return admins[_account] || _account == owner;
   }

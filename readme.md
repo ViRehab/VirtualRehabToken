@@ -1,4 +1,4 @@
-# Virtual Rehab Token (VRH) 
+# Virtual Rehab Token (VRH)
 
 This repository contains ERC20 token contract code of Virtual Rehab.
 
@@ -8,8 +8,6 @@ This repository contains ERC20 token contract code of Virtual Rehab.
 
 https://truffleframework.com
 
-
-
 **Clone the Repository**
 
 ```git
@@ -17,7 +15,6 @@ git clone https://github.com/ViRehab/Token
 ```
 
 **Install Packages**
-
 
 ```node
 npm install
@@ -39,19 +36,18 @@ truffle test
 
 [Documentation](docs/VRHToken.md)
 
-
 # About Virtual Rehab
 
-Virtual Rehab's evidence-based solution leverages the advancements in virtual reality, artificial intelligence, and blockchain technologies for pain management, prevention of substance use disorders, and rehabilitation of repeat offenders. 
+Virtual Rehab's evidence-based solution leverages the advancements in virtual reality, artificial intelligence, and blockchain technologies for pain management, prevention of substance use disorders, and rehabilitation of repeat offenders.
 
-Our all-encompassing solution currently serves the B2B market (Rehab Centers, Hospitals, Correctional Departments, etc.). In addition, post-ICO, using blockchain technology, we will also be able to reach out to these vulnerable populations directly (B2C market), to offer help and to offer incentives through the use of Virtual Rehab's ERC20 $VRH utility token.
+Our all-encompassing solution currently serves the B2B market (Rehab Centers, Hospitals, Correctional Departments, etc.). In addition, post-ICO, using blockchain technology, we will also be able to reach out to these vulnerable populations directly (B2C market), to offer help and to offer incentives through the use of Virtual Rehab's ERC20 \$VRH utility token.
 
 Virtual Rehab's all-encompassing solution covers the following pillars:
 
 - Virtual Reality - A virtual simulation of the real world using cognitive behavior and exposure therapy to trigger and to cope with temptations
 - Artificial Intelligence - A unique expert system to identify areas of risk, to make treatment recommendations, and to predict post-therapy behavior
 - Blockchain - A secure network to ensure privacy and decentralization of all data and all information relevant to vulnerable populations
-- $VRH Token - An ERC-20 utility token that empowers users to purchase services and to be rewarded for seeking help through Virtual Rehab’s online portal
+- \$VRH Token - An ERC-20 utility token that empowers users to purchase services and to be rewarded for seeking help through Virtual Rehab’s online portal
 
 Some of Virtual Rehab's notable successes include the following:
 
@@ -64,30 +60,23 @@ Some of Virtual Rehab's notable successes include the following:
 - Selected as one of Canada’s most promising high-growth life sciences companies (Dose of the Valley, CA)
 - Featured by Microsoft’s leadership team at the Microsoft Inspire Innovation Session
 - Nominated by The Wall Street Journal for the WSJ D.LIVE Startup Showcase (Laguna Beach, CA)
-- Ranked by Spanish media as the first option for training correctional officers and rehabilitation of offenders using virtual reality 
+- Ranked by Spanish media as the first option for training correctional officers and rehabilitation of offenders using virtual reality
 - Featured by the media across 28 countries worldwide
 
 Thank you for taking the time to learn more about Virtual Rehab. We appreciate your interest in what we do.
 
-
 # Tokenomics
 
-
-
-| Type  | Description  |
-| -------- | -------- |
-| Token Type     | ERC20 Token   |
-| Name     | Virtual Rehab Token  |
-| Ticker | VRH |
-| Decimals | 18 |
-| Maximum Supply | 400 million VRH |
-| Circulating Supply | TBA |
-| Contributions Accepted In | ETH / BNB |
-| Contract Address | TBA |
-
-
-
-
+| Type                      | Description                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Token Type                | ERC20 Token                                                                                                         |
+| Name                      | Virtual Rehab Token                                                                                                 |
+| Ticker                    | VRH                                                                                                                 |
+| Decimals                  | 18                                                                                                                  |
+| Maximum Supply            | 400 million VRH                                                                                                     |
+| Circulating Supply        | TBA                                                                                                                 |
+| Contributions Accepted In | ETH / BNB                                                                                                           |
+| Contract Address          | [0x0914b7ae021c229b7a51ff936f8ffc8c81fbcea7](https://etherscan.io/token/0x0914b7ae021c229b7a51ff936f8ffc8c81fbcea7) |
 
 ### Links
 

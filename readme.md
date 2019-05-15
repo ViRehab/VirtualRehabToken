@@ -75,7 +75,7 @@ Thank you for taking the time to learn more about Virtual Rehab. We appreciate y
 | Decimals                  | 18                                                                                                                  |
 | Maximum Supply            | 400 million VRH                                                                                                     |
 | Circulating Supply        | TBA                                                                                                                 |
-| Contributions Accepted In | ETH / BNB                                                                                                           |
+| Contributions Accepted In | ETH / BNB / CS                                                                                                          |
 | Contract Address          | [0x0914b7ae021c229b7a51ff936f8ffc8c81fbcea7](https://etherscan.io/token/0x0914b7ae021c229b7a51ff936f8ffc8c81fbcea7) |
 
 ### Links

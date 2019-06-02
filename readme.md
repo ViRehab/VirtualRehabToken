@@ -45,13 +45,13 @@ Virtual Rehab's all-encompassing solution covers the following pillars:
 - Virtual Reality - A virtual simulation of the real world using cognitive behavior and exposure therapy to trigger and to cope with temptations
 - Artificial Intelligence - A unique expert system to identify areas of risk, to make treatment recommendations, and to predict post-therapy behavior
 - Blockchain - A secure network to ensure privacy and decentralization of all data and all information relevant to vulnerable populations
-- \$VRH Token - An ERC-20 utility token that empowers users to purchase services and to be rewarded for seeking help through Virtual Rehab’s online portal
+- VRH Token - An ERC20 utility token that empowers users to purchase services and to be rewarded for seeking help through Virtual Rehab’s online portal
 
 The VRH utility token has four use cases:
  
 -	Allows users to order and download programs from Virtual Rehab Online Portal
 -	Allows users to request additional analysis (using Virtual Rehab unique expert system, which uses Artificial Intelligence) of executed programs
--	Incentivizes users with $VRH tokens reward for seeking help and counselling from medical doctors, psychologists, and therapists (Proof of Therapy)
+-	Incentivizes users with VRH tokens reward for seeking help and counselling from medical doctors, psychologists, and therapists (Proof of Therapy)
 -	Allows users to pay for services received at the Virtual Rehab Therapy Center (VRTC)
 
 Some of Virtual Rehab's notable successes include the following:
